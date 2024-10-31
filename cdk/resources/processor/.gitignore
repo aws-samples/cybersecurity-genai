@@ -1,0 +1,13 @@
+__init__.py
+__pycache__/**
+.pytest_cache
+**/*.py[cod]
+**/.DS_Store
+.python-version
+.venv
+*.swp
+.vscode/**
+
+# CDK asset staging directory
+.cdk.staging
+**/cdk.out/**

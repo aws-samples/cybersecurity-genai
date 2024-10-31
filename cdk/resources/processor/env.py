@@ -1,0 +1,27 @@
+import os
+import json
+
+BEDROCK_EMBEDDINGS_MODEL_V2 = 'amazon.titan-embed-text-v2:0'
+
+AWS_REGION = os.environ['AWS_REGION']
+
+INDEX_RECORD_LIMIT = int(os.environ["INDEX_RECORD_LIMIT"])
+INDEX_REPORT_COUNT=int(INDEX_RECORD_LIMIT/10)
+
+OS_PURGE_LT = os.environ['OS_PURGE_LT']
+OS_TIME_ZONE = os.environ['OS_TIME_ZONE']
+
+OS_ENDPOINT = os.environ['OS_ENDPOINT']
+
+SECURITY_LAKE_ATHENA_BUCKET = os.environ["SECURITY_LAKE_ATHENA_BUCKET"]
+SECURITY_LAKE_ATHENA_PREFIX = os.environ["SECURITY_LAKE_ATHENA_PREFIX"]
+ATHENA_QUERY_TIMEOUT = int(os.environ["ATHENA_QUERY_TIMEOUT"])
+
+SL_DATABASE_NAME = os.environ["SL_DATABASE_NAME"]
+SL_FINDINGS = os.environ["SL_FINDINGS"]
+SL_ROUTE53 = os.environ["SL_ROUTE53"]
+SL_S3DATA = os.environ["SL_S3DATA"]
+SL_VPCFLOW = os.environ["SL_VPCFLOW"]
+SL_CLOUDTRAIL = os.environ["SL_CLOUDTRAIL"]
+SL_LAMBDA = os.environ["SL_LAMBDA"]
+SL_DATASOURCE_MAP = json.loads(os.environ["SL_DATASOURCE_MAP"])

@@ -1,0 +1,10 @@
+{
+  "id": "/",
+  "start_url": "/",
+  "name": "AWS Cybersecurity GenAI Demo",
+  "short_name": "Cybersecurity GenAI",
+  "description": "Use Natural Language to understand your AWS security posture",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}

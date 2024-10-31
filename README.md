@@ -1,6 +1,8 @@
 ## My Project
 
+TODO: Test pulling this repo from GitHub and deploying
 TODO: Fill this README out!
+TODO: create the .gitignore
 
 Be sure to:
 
