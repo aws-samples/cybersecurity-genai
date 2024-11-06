@@ -1,169 +1,58 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
-
-"""
-Type: Structure Query Prompt
-For: AOSS Index security_lake_s3_data_index
-"""
-
-
-def system_prompt() -> str:
-    p = """# OpenSearch DSL Query Generation
-    You are a function that converts text to OpenSearch DSL queries based on the provided guidelines.
-    ## Text Input
-    The text to be converted will be enclosed between the `<TEXT></TEXT>` tags.
-    ## Guidelines
-
-    ### 1. Available Fields
-    These are the only fields available to build the DSL query.
-
-    - **Field**: `status`
-    - **Use**: Find events that resulted in success or failure
-    - **Data Type**: Text
-
-    - **Field**: `accountid`
-    - **Use**: Find events by AWS account ID
-    - **Data Type**: Number
-
-    - **Field**: `region`
-    - **Use**: Find events by AWS region
-    - **Data Type**: Text
-
-    - **Field**: `resources_uid`
-    - **Use**: Find events if you have the S3 bucket ARN (e.g., `arn:aws:s3:::<bucketname>`)
-    - **Data Type**: Text
-
-    - **Field**: `api_operation`
-    - **Use**: Find S3 operations against the bucket (e.g., `GetBuckets`, `GetObjectAcl`, `DeleteObject`)
-    - **Data Type**: Text
-
-    - **Field**: `time_dt`
-    - **Use**: Find events within a time range or period
-    - **Data Type**: Date
-
-    - **Field**: `api.request.data.bucketName`
-    - **Use**: Find events by S3 bucket name
-    - **Data Type**: Text
-
-    - **Field**: `api.request.data.key`
-    - **Use**: Find events by S3 object key (file path)
-    - **Data Type**: Text
-
-    ### 2. Query Examples
-    The following examples demonstrate how to construct queries using the available fields.
-
-    - **Search for events that resulted in failure**:
-    ```json
-    {
-        "query": {
-        "match": {
-            "status": "Failure"
-        }
-        }
-    }
-    ```
-
-    - **Search for events by AWS account ID**:
-    ```json
-    {
-        "query": {
-        "match": {
-            "accountid": 123456789012
-        }
-        }
-    }
-    ```
-
-    - **Search for events with multiple conditions**:
-    ```json
-    {
-        "query": {
-        "bool": {
-            "must": [
-            { "match": { "accountid": 123456789012 }},
-            { "match": { "region": "us-east-1" }}
-            ]
-        }
-        }
-    }
-    ```
-
-    - **Search for events within a time range**:
-    ```json
-    {
-        "query": {
-        "range": {
-            "time_dt": {
-            "gte": "2023-05-01",
-            "lte": "2023-05-10"
-            }
-        }
-        }
-    }
-    ```
-
-    - **Search for events by bucket name**:
-    ```json
-    {
-        "query": {
-        "match": {
-            "api.request.data.bucketName": "my-bucket"
-        }
-        }
-    }
-    ```
-
-    - **Search for events by object key**:
-    ```json
-    {
-        "query": {
-        "match": {
-            "api.request.data.key": "path/to/object.txt"
-        }
-        }
-    }
-    ```
-
-    - **Search using wildcard queries for partial bucket name or key**:
-    ```json
-    {
-        "query": {
-        "wildcard": {
-            "api.request.data.bucketName": {
-            "value": "my-bucket*"
-            }
-        }
-        }
-    }
-    ```
-
-    ### 3. Output Format
-    Append the following at the end of all queries to exclude the `embedding_vector` field:
-
-    ```json
-    "_source": {
-    "excludes": [
-        "embedding_vector"
-    ]
-    }
-    ```
-
-    Enclose the final DSL query between the `<DSL></DSL>` tags in the output.
-
-    <DSL>
-    # OpenSearch DSL query goes here
-    </DSL>
-
-    </STOP>
-    """
-    return trim(p)
+from string import Template
+import prompts
+import prompts.common
 
 
 
-def user_prompt(user_input: str) -> str:
-    p = f'<TEXT>{user_input}</TEXT>'
-    return trim(p)
+def system() -> str:
+    prompt_template = Template("""
+<available_fields>
+- time_dt (date): Timestamp in ISO format
+- cloud.region (text)
+- cloud.region.keyword (text)
+- api.request.data.bucketName (text)
+- api.request.data.bucketName.keyword (text)
+- api.request.data.key (text)
+- api.request.data.key.keyword (text)
+- api.request.data.Host (text): s3 bucket by url ie. my-bucket.s3.amazonaws.com
+- api.request.data.Host.keyword (text)
+- api.operation (text): ie. GetObject, PutObject
+- api.operation.keyword (text)
+- src_endpoint.ip (text)
+- src_endpoint.ip.keyword (text)
+- src_endpoint.domain (text)
+- src_endpoint.domain.keyword (text)
+- actor.user.uid (text): AWS ARN of the IAM Role that accessed the bucket
+- actor.user.uid.keyword (text)
+- actor.user.account.uid (text)
+- actor.user.account.uid.keyword (text)
+- actor.user.credential_uid (text): AWS IAM Access Key used to access the bucket
+- actor.user.credential_uid.keyword (text)
+- actor.session.is_mfa (bool)
+- actor.session.is_mfa.keyword (bool)
+- status (text): Success|Failure
+</available_fields>
+
+<rules>
+$common_rules
+</rules>
+                               
+Build a query in response to the search criteria using the avialable_fields following the rules.
+    """)
+    prompt = prompt_template.substitute(
+        common_rules=prompts.common.SYSTEM_PROMPT_RULES
+    )
+    return prompt
 
 
-def trim(text: str) -> str:
-    return text.replace('\n    ', '\n')
+def user(user_input: str) -> str:
+    prompt_template = Template("""
+    CURRENT_DATE=$current_date
+    CURRENT_TIME=$current_time     
+    <user_input>$user_input<user_input>""")
+    prompt = prompt_template.substitute(
+        current_date=prompts.common.get_current_date(),
+        current_time=prompts.common.get_current_time(),
+        user_input=user_input
+    )
+    return prompt

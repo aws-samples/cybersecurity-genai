@@ -1,0 +1,43 @@
+/* Default styles (light theme) */
+.message-bubble {
+  padding: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #000000;
+}
+
+.message-bubble.ai {
+  background-color: #f0f7ff;
+}
+
+.message-bubble.user {
+  background-color: #f0fdf4;
+}
+
+.typing-indicator {
+  padding: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #f0f7ff;
+  color: #000000;
+}
+
+/* Dark theme overrides */
+body.awsui-dark-mode .message-bubble {
+  border-color: #4a5568;
+  color: #ffffff;
+}
+
+body.awsui-dark-mode .message-bubble.ai {
+  background-color: #1a2634;
+}
+
+body.awsui-dark-mode .message-bubble.user {
+  background-color: #1a2d1a;
+}
+
+body.awsui-dark-mode .typing-indicator {
+  border-color: #4a5568;
+  background-color: #1a2634;
+  color: #ffffff;
+}

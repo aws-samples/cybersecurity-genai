@@ -1,12 +1,12 @@
 import json
 from datetime import datetime
 from container.bedrock_utils import get_embedding
-from indexes.opensearch_utils import add_index_document, create_index, delete_index, \
+from indexes.opensearch_utils import create_index, delete_index, \
                                      get_index_max_time, index_exists, index_count, \
-                                     index_search, index_purge
+                                     index_search, index_purge, bulk_open_search
 from indexes.athena_index_utils import athena_to_s3, cleanup_file, map_dict_column
 from indexes.s3_reader import s3_read_dictionary
-from env import AWS_REGION, INDEX_RECORD_LIMIT, INDEX_REPORT_COUNT, ATHENA_QUERY_TIMEOUT, SL_S3DATA, SL_DATASOURCE_MAP
+from env import AWS_REGION, INDEX_RECORD_LIMIT, INDEX_REPORT_COUNT, AOSS_BULK_CREATE_SIZE, ATHENA_QUERY_TIMEOUT, SL_S3DATA, SL_DATASOURCE_MAP
 
 security_lake_s3_data_query_2_0 = f"select \
  class_name, \
@@ -64,26 +64,26 @@ security_lake_s3_data_index_knn = {
         }
       },
       "class_name": {
-        "type": "text"
+        "type": "keyword"
       },
       "category_name": {
-        "type": "text"
+        "type": "keyword"
       },
       "severity": {
-        "type": "text"
+        "type": "keyword"
       },
       "type_name": {
-        "type": "text"
+        "type": "keyword"
       },
       "time": {
         "type" : "date",
         "format" : "strict_date_optional_time||epoch_millis"
       },
       "status": {
-        "type": "text"
+        "type": "keyword"
       },
       "api_service_name": {
-        "type": "text"
+        "type": "keyword"
       },
       "api_operation": {
         "type": "text"
@@ -98,7 +98,7 @@ security_lake_s3_data_index_knn = {
         "type": "text"
       },
       "resource_type": {
-        "type": "text"
+        "type": "keyword"
       },
       "time_dt": {
         "type" : "date",
@@ -122,9 +122,6 @@ security_lake_s3_data_index_knn = {
       "type_uid": {
         "type": "integer"
       },
-      "status": {
-        "type": "text"
-      },
       "is_mfa": {
         "type": "boolean"
       },
@@ -132,7 +129,7 @@ security_lake_s3_data_index_knn = {
         "type": "text"
       },
       "region": {
-        "type": "text"
+        "type": "keyword"
       },
       "asl_version": {
         "type": "text"
@@ -196,6 +193,8 @@ def build_s3_data_index(bedrock, s3_bucket = None, s3_key = None, delete_idx = F
     print(f"S3 Data Athena rows found: { len(list) }")
 
     error_cnt = 0
+    bulk_body = []
+
     for index, row in enumerate(list):
         response_error: str
         http_user_agent: str
@@ -246,7 +245,7 @@ def build_s3_data_index(bedrock, s3_bucket = None, s3_key = None, delete_idx = F
             map_dict_column(row, doc, "cloud")
             map_dict_column(row, doc, "api")
             api_data = doc["api"]["request"]["data"]
-            doc["api"]["request"]["data"] = json.loads(api_data) if (api_data != None) and len(api_data) > 0 else None
+            doc["api"]["request"]["data"] = json.loads(api_data) if api_data and api_data.strip() else None
 
             map_dict_column(row, doc, "dst_endpoint")
             map_dict_column(row, doc, "actor")
@@ -264,11 +263,18 @@ def build_s3_data_index(bedrock, s3_bucket = None, s3_key = None, delete_idx = F
             embedding_vector = get_embedding(bedrockBody, bedrock)
             doc["embedding_vector"] = embedding_vector
 
-            add_index_document(security_lake_s3_data_index_name, doc)
+            bulk_body.append({ "create": { "_index": security_lake_s3_data_index_name } })
+            bulk_body.append(doc)
 
-            if ((index > 0 and index % INDEX_REPORT_COUNT == 0)
-               or len(list) - 1 == index):
-                print(index)
+            bulk_len = len(bulk_body)/2
+            if (bulk_len % AOSS_BULK_CREATE_SIZE == 0) or (index == len(list) - 1):
+                bulk_response = bulk_open_search("_bulk", bulk_body)
+                print(f"bulk_response: time={bulk_response.get('took', 'N/A')}ms | items={len(bulk_response.get('items', []))} | errors={bulk_response.get('errors', 'N/A')}")
+                bulk_body = []
+
+            processed_len = index + 1
+            if (processed_len % INDEX_REPORT_COUNT == 0) or index == len(list) - 1:
+                print(f"processed: { processed_len }")
             if index >= INDEX_RECORD_LIMIT:
                 break
 
@@ -342,7 +348,7 @@ def ingest_security_lake_s3_data_data(bedrock, credentials):
     max_time = get_index_max_time(security_lake_s3_data_index_name, True)
 
     query = security_lake_s3_data_query_2_0
-    if max_time != None:
+    if max_time is not None:
       # print (f"query max_time = {max_time} ")
       query = f"{ query } WHERE time > { max_time } and \
         http_request.user_agent != 'athena.amazonaws.com'"

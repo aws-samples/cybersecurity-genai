@@ -17,7 +17,7 @@ def athena_query(client, params):
     return response
 
 def athena_to_s3(params, credentials, max_execution = 30):
-    if credentials == None:
+    if credentials is None:
       client = boto3.client('athena', region_name=params["region"])
     else:
       client = boto3.client('athena', region_name=params["region"],
@@ -59,5 +59,5 @@ def cleanup_file(bucketname, key):
 
 def map_dict_column(row, doc, property):
     p = row[property]
-    doc[property] = json.loads(p) if (p != None) and len(p) > 0 else None
+    doc[property] = json.loads(p) if (p is not None) and len(p) > 0 else None
     

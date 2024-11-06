@@ -1,11 +1,18 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT-0
 
+# REPLACE EMAIL with your email address
+EMAIL = 'xxx@yyyy.com'
 
+# The AOSS_READ_ONLY_ROLE_ARN is the Read Only role for the Open Search Data Access Policy
+# Set this Role Name to add a AOSS Read Only data policy
+# example: arn:aws:iam::1234566789012:role/YourRoleName
+AOSS_READ_ONLY_ROLE_ARN=""
 
 # stack resource ids/names
 STACK = 'CybersecurityGenAIDemo'
 STACK_DESCRIPTION = 'Cybersecurity GenAI Demo'
+SSM_PARAMETER = 'cybersecurity-genai-config'
 
 # authentication
 AUTHENTICATION_STACK = 'Authentication'
@@ -55,3 +62,36 @@ BEDROCK_AGENT_IAM_POLICY_ID = 'BedrockAgentIamPolicy'
 BEDROCK_AGENT_IAM_POLICY_NAME = f'{BEDROCK_AGENT_STACK}-BedrockAgentPolicy'
 BEDROCK_AGENT_IAM_ROLE_ID = 'BedrockAgentIamRole'
 BEDROCK_AGENT_IAM_ROLE_NAME = f'{BEDROCK_AGENT_STACK}-BedrockAgentRole'
+
+# embedding processor
+
+AOSS_PURGE_LT="now-5d/d"
+AOSS_TIME_ZONE="US/Eastern"
+AOSS_COLLECTION_RETAIN = False
+AOSS_BULK_CREATE_SIZE = "1000"
+
+INDEX_RECORD_LIMIT="2000"
+SECURITY_LAKE_ATHENA_BUCKET="securitylake-incremental-data"
+SECURITY_LAKE_ATHENA_PREFIX="temp-athena-output"
+ATHENA_QUERY_TIMEOUT="420"
+EVENT_BRIDGE_SCHEDULE_EXPRESSION="rate(10 minutes)"
+EVENT_BRIDGE_BATCH_SUBMIT_JOB_ARN="arn:aws:scheduler:::aws-sdk:batch:submitJob"
+
+SL_DATABASE_NAME = "amazon_security_lake_glue_db_us_east_1"
+SL_FINDINGS = "amazon_security_lake_table_us_east_1_sh_findings_2_0"
+SL_ROUTE53 = "amazon_security_lake_table_us_east_1_route53_2_0"
+SL_S3DATA = "amazon_security_lake_table_us_east_1_s3_data_2_0"
+SL_VPCFLOW = "amazon_security_lake_table_us_east_1_vpc_flow_2_0"
+SL_CLOUDTRAIL = "amazon_security_lake_table_us_east_1_cloud_trail_mgmt_2_0"
+SL_LAMBDA = "amazon_security_lake_table_us_east_1_lambda_execution_2_0"
+
+SL_DATASOURCE_MAP = {
+    'cloudtrail_management': 'security_lake_cloud_trail_index',
+    'security_hub': 'security_lake_findings_index',
+    's3_data_events': 'security_lake_s3_data_index',
+    'lambda_data_events': 'security_lake_lambda_index',
+    'route53_logs': 'security_lake_route53_index',
+    'vpc_flow_logs': 'security_lake_vpc_flow_index',
+    'eks_audit': None,
+    'wafv2_logs': None
+}

@@ -1,5 +1,5 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT-0
 
 
 
@@ -10,7 +10,7 @@ from aws_cdk import aws_bedrock
 from aws_cdk import aws_iam
 from aws_cdk import aws_lambda
 from constructs import Construct
-from resources.agents.search_security_lake import instruction, action_group
+from resources.agents.search_security_lake import instruction, action_group, orchestration_template
 
 
 
@@ -88,7 +88,24 @@ class BedrockAgent(Construct):
                     ),
                     description=action_group.description
                 )
-            ]
+            ],
+            prompt_override_configuration=aws_bedrock.CfnAgent.PromptOverrideConfigurationProperty(
+                prompt_configurations=[
+                    aws_bedrock.CfnAgent.PromptConfigurationProperty(
+                        base_prompt_template=orchestration_template.template,
+                        inference_configuration=aws_bedrock.CfnAgent.InferenceConfigurationProperty(
+                            maximum_length=2048,
+                            stop_sequences=orchestration_template.stop_sequences,
+                            temperature=orchestration_template.temperature,
+                            top_k=orchestration_template.top_k,
+                            top_p=orchestration_template.top_p
+                        ),
+                        parser_mode=orchestration_template.prompt_parse_mode,
+                        prompt_creation_mode=orchestration_template.prompt_creation_mode,
+                        prompt_state=orchestration_template.prompt_state,
+                        prompt_type=orchestration_template.prompt_type                    )
+                ]
+            )
         )
 
         alias = aws_bedrock.CfnAgentAlias(

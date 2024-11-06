@@ -1,0 +1,18 @@
+# general
+.DS_Store
+.python-version
+
+
+# cdk
+cdk.out
+__pycache__
+
+
+# node
+.env
+package-lock.json
+node_modules
+dist
+tsconfig.node.tsbuildinfo
+tsconfig.tsbuildinfo
+vite.config.d.ts

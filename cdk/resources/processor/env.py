@@ -8,10 +8,10 @@ AWS_REGION = os.environ['AWS_REGION']
 INDEX_RECORD_LIMIT = int(os.environ["INDEX_RECORD_LIMIT"])
 INDEX_REPORT_COUNT=int(INDEX_RECORD_LIMIT/10)
 
-OS_PURGE_LT = os.environ['OS_PURGE_LT']
-OS_TIME_ZONE = os.environ['OS_TIME_ZONE']
-
-OS_ENDPOINT = os.environ['OS_ENDPOINT']
+AOSS_PURGE_LT = os.environ['AOSS_PURGE_LT']
+AOSS_TIME_ZONE = os.environ['AOSS_TIME_ZONE']
+AOSS_ENDPOINT = os.environ['AOSS_ENDPOINT']
+AOSS_BULK_CREATE_SIZE = int(os.environ['AOSS_BULK_CREATE_SIZE'])
 
 SECURITY_LAKE_ATHENA_BUCKET = os.environ["SECURITY_LAKE_ATHENA_BUCKET"]
 SECURITY_LAKE_ATHENA_PREFIX = os.environ["SECURITY_LAKE_ATHENA_PREFIX"]
@@ -25,3 +25,14 @@ SL_VPCFLOW = os.environ["SL_VPCFLOW"]
 SL_CLOUDTRAIL = os.environ["SL_CLOUDTRAIL"]
 SL_LAMBDA = os.environ["SL_LAMBDA"]
 SL_DATASOURCE_MAP = json.loads(os.environ["SL_DATASOURCE_MAP"])
+
+if 'RUN_INDEX_NAME' in os.environ:
+    RUN_INDEX_NAME = os.environ['RUN_INDEX_NAME']
+    if RUN_INDEX_NAME is not None:
+        if RUN_INDEX_NAME not in SL_DATASOURCE_MAP.values():
+            print(f"RUN_INDEX_NAME: \"{RUN_INDEX_NAME}\" invalid")
+            RUN_INDEX_NAME = None
+        else:
+            print(f"RUN_INDEX_NAME: {RUN_INDEX_NAME}")
+else:
+    RUN_INDEX_NAME = None

@@ -8,9 +8,9 @@ from aws_cdk import (
     aws_opensearchserverless as ops
 )
 from processor.namespace import BATCH_JOB_COMPUTE, BATCH_JOB_DEFINITION, BATCH_JOB_QUEUE
-from processor.cdk_env import CdkEnv
 from constructs import Construct
 import json
+import constants
 
 class BatchProcessor(Construct):
 
@@ -45,21 +45,22 @@ class BatchProcessor(Construct):
                 fargate_operating_system_family=ecs.OperatingSystemFamily.LINUX,
                 environment={
                     "AWS_REGION": scope.region,
-                    "INDEX_RECORD_LIMIT": CdkEnv.INDEX_RECORD_LIMIT,
-                    "OS_PURGE_LT": CdkEnv.OS_PURGE_LT,
-                    "OS_TIME_ZONE": CdkEnv.OS_TIME_ZONE,
-                    "OS_ENDPOINT": collection_endpoint,
+                    "INDEX_RECORD_LIMIT": constants.INDEX_RECORD_LIMIT,
+                    "AOSS_PURGE_LT": constants.AOSS_PURGE_LT,
+                    "AOSS_TIME_ZONE": constants.AOSS_TIME_ZONE,
+                    "AOSS_ENDPOINT": collection_endpoint,
+                    "AOSS_BULK_CREATE_SIZE": constants.AOSS_BULK_CREATE_SIZE,
                     "SECURITY_LAKE_ATHENA_BUCKET": bucket_name,
-                    "SECURITY_LAKE_ATHENA_PREFIX": CdkEnv.SECURITY_LAKE_ATHENA_PREFIX,
-                    "SL_DATABASE_NAME": CdkEnv.SL_DATABASE_NAME,
-                    "ATHENA_QUERY_TIMEOUT": CdkEnv.ATHENA_QUERY_TIMEOUT,
-                    "SL_FINDINGS": CdkEnv.SL_FINDINGS,
-                    "SL_ROUTE53": CdkEnv.SL_ROUTE53,
-                    "SL_S3DATA": CdkEnv.SL_S3DATA,
-                    "SL_VPCFLOW": CdkEnv.SL_VPCFLOW,
-                    "SL_CLOUDTRAIL": CdkEnv.SL_CLOUDTRAIL,
-                    "SL_LAMBDA": CdkEnv.SL_LAMBDA,
-                    "SL_DATASOURCE_MAP": json.dumps(CdkEnv.SL_DATASOURCE_MAP)
+                    "SECURITY_LAKE_ATHENA_PREFIX": constants.SECURITY_LAKE_ATHENA_PREFIX,
+                    "SL_DATABASE_NAME": constants.SL_DATABASE_NAME,
+                    "ATHENA_QUERY_TIMEOUT": constants.ATHENA_QUERY_TIMEOUT,
+                    "SL_FINDINGS": constants.SL_FINDINGS,
+                    "SL_ROUTE53": constants.SL_ROUTE53,
+                    "SL_S3DATA": constants.SL_S3DATA,
+                    "SL_VPCFLOW": constants.SL_VPCFLOW,
+                    "SL_CLOUDTRAIL": constants.SL_CLOUDTRAIL,
+                    "SL_LAMBDA": constants.SL_LAMBDA,
+                    "SL_DATASOURCE_MAP": json.dumps(constants.SL_DATASOURCE_MAP)
                 }
             )
         )

@@ -1,7 +1,9 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT-0
 
 
+
+import json
 import constants
 from aws_cdk import Stack
 from aws_cdk import CfnOutput
@@ -16,9 +18,9 @@ from processor.event_bridge_scheduled_job import EventBridgeScheduledBatchJob
 from processor.opensearch_serverless import OpenSearchServerless
 from processor.lake_formation import LakeFormationTablePermissions
 from processor.lake_formation_settings import LakeFormationSettings
-from processor.cdk_env import CdkEnv
-from resources.authentication import Cognito
+from resources.authentication import Cognito, CreateUser
 from resources.web_ui import CloudFront
+from resources.parameter import Parameter
 from resources.search_security_lake import SearchSecurityLake
 from resources.agent import BedrockAgent
 
@@ -38,15 +40,15 @@ class AppStack(Stack):
             processor_iam_role.role.role_arn
         ]
 
-        if CdkEnv.OS_READ_ONLY_ROLE:
-            read_only_aoss_data_access_policy_roles = [f'arn:aws:iam::{Aws.ACCOUNT_ID}:role/{CdkEnv.OS_READ_ONLY_ROLE}']
+        if constants.AOSS_READ_ONLY_ROLE_ARN:
+            read_only_aoss_data_access_policy_roles = [constants.AOSS_READ_ONLY_ROLE_ARN]
 
         # < EMBEDDING PROCESSOR >
         vpc_infrastructure = VpcInfrastructure(self, "VPC")        
 
         opensearch_serverless = OpenSearchServerless(self, "OpenSearchServerless", data_access_policy_roles=processor_aoss_data_access_policy_roles, ro_data_access_policy_roles=read_only_aoss_data_access_policy_roles)
 
-        bucket = S3Bucket(self, construct_id, CdkEnv.SECURITY_LAKE_ATHENA_BUCKET) 
+        bucket = S3Bucket(self, construct_id, constants.SECURITY_LAKE_ATHENA_BUCKET) 
 
         ecr_repo = EcrRepo(self, "dockerImage")
 
@@ -70,12 +72,12 @@ class AppStack(Stack):
         # Lake Formation Permission Construct
         principal_arn = processor_iam_role.role.role_arn
         lf_settings = lake_formation_settings.settings
-        grant_findings = LakeFormationTablePermissions(self, "GrantFindings", Aws.ACCOUNT_ID, CdkEnv.SL_DATABASE_NAME, CdkEnv.SL_FINDINGS, principal_arn, lf_settings)
-        grant_route53 = LakeFormationTablePermissions(self, "GrantRoute53", Aws.ACCOUNT_ID, CdkEnv.SL_DATABASE_NAME, CdkEnv.SL_ROUTE53, principal_arn, lf_settings)
-        grant_s3data = LakeFormationTablePermissions(self, "GrantS3Data", Aws.ACCOUNT_ID, CdkEnv.SL_DATABASE_NAME, CdkEnv.SL_S3DATA, principal_arn, lf_settings)
-        grant_vpcflow = LakeFormationTablePermissions(self, "GrantVpcFlow", Aws.ACCOUNT_ID, CdkEnv.SL_DATABASE_NAME, CdkEnv.SL_VPCFLOW, principal_arn, lf_settings)
-        grant_cloudtrail = LakeFormationTablePermissions(self, "GrantCloudTrail", Aws.ACCOUNT_ID, CdkEnv.SL_DATABASE_NAME, CdkEnv.SL_CLOUDTRAIL, principal_arn, lf_settings)
-        grant_lambda = LakeFormationTablePermissions(self, "GrantLambda", Aws.ACCOUNT_ID, CdkEnv.SL_DATABASE_NAME, CdkEnv.SL_LAMBDA, principal_arn, lf_settings)
+        grant_findings = LakeFormationTablePermissions(self, "GrantFindings", Aws.ACCOUNT_ID, constants.SL_DATABASE_NAME, constants.SL_FINDINGS, principal_arn, lf_settings)
+        grant_route53 = LakeFormationTablePermissions(self, "GrantRoute53", Aws.ACCOUNT_ID, constants.SL_DATABASE_NAME, constants.SL_ROUTE53, principal_arn, lf_settings)
+        grant_s3data = LakeFormationTablePermissions(self, "GrantS3Data", Aws.ACCOUNT_ID, constants.SL_DATABASE_NAME, constants.SL_S3DATA, principal_arn, lf_settings)
+        grant_vpcflow = LakeFormationTablePermissions(self, "GrantVpcFlow", Aws.ACCOUNT_ID, constants.SL_DATABASE_NAME, constants.SL_VPCFLOW, principal_arn, lf_settings)
+        grant_cloudtrail = LakeFormationTablePermissions(self, "GrantCloudTrail", Aws.ACCOUNT_ID, constants.SL_DATABASE_NAME, constants.SL_CLOUDTRAIL, principal_arn, lf_settings)
+        grant_lambda = LakeFormationTablePermissions(self, "GrantLambda", Aws.ACCOUNT_ID, constants.SL_DATABASE_NAME, constants.SL_LAMBDA, principal_arn, lf_settings)
 
         # < END EMBEDDING PROCESSOR >
             
@@ -85,7 +87,7 @@ class AppStack(Stack):
         # aoss collection id
         aoss_collection_id = opensearch_serverless.collection.attr_id
         # aoss security lake indices
-        aoss_collection_map = CdkEnv.SL_DATASOURCE_MAP
+        aoss_collection_map = constants.SL_DATASOURCE_MAP
 
 
 
@@ -97,6 +99,29 @@ class AppStack(Stack):
         web_ui = CloudFront(
             self,
             constants.WEB_UI_STACK
+        )
+
+        allowed_origins = f'https://{web_ui.distribution.domain_name}'
+
+        parameter_name = constants.SSM_PARAMETER
+        parameter_value = json.dumps({
+            'allowed_origins': allowed_origins,
+            'user_pool_id': authentication.user_pool.user_pool_id,
+            'user_email': constants.EMAIL
+        })
+
+        parameters = Parameter(
+            self,
+            'Parameter',
+            parameter_name,
+            parameter_value
+        )
+
+        create_user = CreateUser(self, 'create-user', authentication.user_pool)
+
+        create_user.function.add_environment(
+            key='parameters',
+            value=parameter_name
         )
 
         search_security_lake = SearchSecurityLake(

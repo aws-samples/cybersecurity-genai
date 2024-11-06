@@ -1,16 +1,17 @@
 name = 'search-security-lake'
-description = 'Search VPC Flowlogs, Route53 Logs, CloudTrail Management Events, S3 Data Events, Lambda Data Events and Security Hub Findings.'
+description = 'Search security logs and events from multiple AWS and third-party sources for cybersecurity analysis and incident response.'
 schema = """openapi: 3.0.0
 info:
   title: search-security-lake
   version: 1.0.0
-  description: Search AWS VPC Flowlogs, Amazon Route53 Logs, AWS CloudTrail Management Events, Amazon S3 Data Events, AWS Lambda Data Events and AWS Security Hub Findings.
+  description: Search security logs and events from multiple AWS and third-party sources for cybersecurity analysis and incident response.
 
 paths:
-  /search-vpc-flow-logs:
-    post:
-      summary: Search AWS VPC Flow Logs.
-      description: Search VPC Flow Logs by IP address, port number, or network interface ID (ENI ID). For example, this endpoint can be used to find logs related to SSH traffic (destination port 22, TCP protocol) from a specific IP address to a specific network interface.
+  /cloudtrail-mgmt:
+    get:
+      summary: AWS CloudTrail management events
+      description: Search AWS CloudTrail logs for management events, including user activity and API calls across AWS services.
+      operationId: cloudtrail-mgmt
       requestBody:
         required: true
         content:
@@ -25,10 +26,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /search-route-53:
-    post:
-      summary: Search for DNS queries in Amazon Route 53
-      description: Search Route 53 logs for DNS queries by record type, hostname, source IP, and time range. Returns query details like hostname, type, source IP, timestamp, response data, and response code.
+  /s3-data-events:
+    get:
+      summary: CloudTrail data events for S3
+      description: Search CloudTrail logs for S3 data events, including object-level operations like GetObject and PutObject.
+      operationId: s3-data-events
       requestBody:
         required: true
         content:
@@ -42,11 +44,12 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
-          
-  /search-cloudtrail:
-    post:
-      summary: Search AWS CloudTrail Management Events
-      description: Search AWS CloudTrail logs for management events related to API calls across various AWS services. Filter events by service name, API action, source IP address, IAM identity, and time range. Returns details about matching events, including the service, action, caller identity, source IP, and event timestamp.
+
+  /lambda-data-events:
+    get:
+      summary: CloudTrail data events for Lambda
+      description: Search CloudTrail logs for Lambda function invocations and related activities.
+      operationId: lambda-data-events
       requestBody:
         required: true
         content:
@@ -60,11 +63,12 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
-          
-  /search-lambda-invoke-events:
-    post:
-      summary: Search AWS Lambda Invoke Events
-      description: Search AWS Lambda function execution, invocation activity (the Invoke API).
+
+  /security-hub:
+    get:
+      summary: AWS Security Hub findings
+      description: Retrieve and analyze security findings from AWS Security Hub, including compliance checks and security best practices.
+      operationId: security-hub
       requestBody:
         required: true
         content:
@@ -78,11 +82,12 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
-          
-  /search-s3-data-events:
-    post:
-      summary: Search Amazon S3 Data Events
-      description: Search S3 Data Events for example Get object, Delete Object and Put Object events.
+
+  /route53-logs:
+    get:
+      summary: Amazon Route 53 resolver query logs
+      description: Search and analyze DNS query logs from Amazon Route 53 for potential security issues or suspicious activities.
+      operationId: route53-logs
       requestBody:
         required: true
         content:
@@ -96,11 +101,12 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
-          
-  /search-security-hub:
-    post:
-      summary: Search AWS Security Hub for findings.
-      description: Searches and retrieves security findings. Findings are for AWS Resources from AWS Services include GuardDuty, Inspector, Config, Audit Manager, Detective, Firewall Manager, Health, IAM Access Analyzer, Macie and Trusted Advisor. Findings are rated by severity INFORMATIONAL, LOW, MEDIUM, HIGH or CRITICAL.
+
+  /vpc-flow-logs:
+    get:
+      summary: Amazon Virtual Private Cloud (Amazon VPC) Flow Logs
+      description: Analyze VPC Flow Logs for network traffic patterns, potential security threats, and troubleshooting network issues.
+      operationId: vpc-flow-logs
       requestBody:
         required: true
         content:
@@ -120,12 +126,16 @@ components:
     QueryRequest:
       type: object
       required:
-        - user_input
+        - user-input
+        - similarity-search
       properties:
-        user_input:
+        user-input:
           type: string
-          description: Proxy the users input.
-
+          description: The user's query in natural language, describing the security information they're looking for.
+        similarity-search:
+          type: boolean
+          description: Set to false for queries with explicit terms, timestamps, or known event types. Enable (set to true) only when the query is broad, conceptual, or doesn't contain specific identifiers.
+    
   responses:
     SuccessfulResponse:
       description: Successful response
@@ -133,7 +143,6 @@ components:
         text/plain:
           schema:
             type: string
-            example: 'The query results as a string.'
 
     BadRequest:
       description: Bad request
@@ -141,7 +150,6 @@ components:
         text/plain:
           schema:
             type: string
-            example: 'Invalid request parameters.'
 
     InternalServerError:
       description: Internal server error
@@ -149,5 +157,4 @@ components:
         text/plain:
           schema:
             type: string
-            example: 'An error occurred while processing the request.'
 """

@@ -2,9 +2,9 @@ import aws_cdk as cdk
 from constructs import Construct
 from aws_cdk import aws_opensearchserverless as ops
 from aws_cdk import aws_iam as iam
-import json
 from processor.namespace import AOSS_SECURITYLAKE_COLLECTION, AOSS_SECURITYLAKE_ENCRYPTION_POLICY, AOSS_SECURITYLAKE_NETWORK_POLICY, AOSS_SECURITYLAKE_DATA_ACCESS_POLICY, AOSS_SECURITYLAKE_READ_ONLY_DATA_ACCESS_POLICY, AOSS_OUTPUT_COLLECTION_ENDPOINT, AOSS_OUTPUT_DASHBOARD_ENDPOINT
-from processor.cdk_env import CdkEnv
+import json
+import constants
 
 
 class OpenSearchServerless(Construct):
@@ -16,7 +16,7 @@ class OpenSearchServerless(Construct):
             name="sec-embed-collection",                               
             type="VECTORSEARCH"
         )
-        if CdkEnv.AOSS_COLLECTION_RETAIN:
+        if constants.AOSS_COLLECTION_RETAIN:
             collection.apply_removal_policy(cdk.RemovalPolicy.RETAIN)
 
         enc_policy = ops.CfnSecurityPolicy(self, AOSS_SECURITYLAKE_ENCRYPTION_POLICY,

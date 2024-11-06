@@ -1,5 +1,5 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT-0
 
 
 
@@ -27,12 +27,12 @@ class SearchSecurityLake(Construct):
             'AOSS_ENDPOINT':aoss_endpoint,
             'AOSS_COLLECTION_MAP': aoss_collection_map,
             'API_PATH_TO_INDEX_MAP': {
-                '/search-security-hub': aoss_collection_map['security_hub'],
-                '/search-vpc-flow-logs': aoss_collection_map['vpc_flow_logs'],
-                '/search-route-53':  aoss_collection_map['route53_logs'],
-                '/search-cloudtrail': aoss_collection_map['cloudtrail_management'],
-                '/search-lambda-invoke-events': aoss_collection_map['lambda_data_events'],
-                '/search-s3-data-events':aoss_collection_map['s3_data_events']
+                '/cloudtrail-mgmt': aoss_collection_map['cloudtrail_management'],
+                '/s3-data-events':aoss_collection_map['s3_data_events'],
+                '/lambda-data-events': aoss_collection_map['lambda_data_events'],
+                '/security-hub': aoss_collection_map['security_hub'],
+                '/route53-logs':  aoss_collection_map['route53_logs'],
+                '/vpc-flow-logs': aoss_collection_map['vpc_flow_logs'],
             }
         })
 

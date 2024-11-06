@@ -1,13 +1,22 @@
 import time
+from env import RUN_INDEX_NAME, SL_DATASOURCE_MAP
+
+def run_index(index):
+    if not RUN_INDEX_NAME or not RUN_INDEX_NAME.strip():
+      return True
+    elif RUN_INDEX_NAME == index:
+      return True
+    else:
+      return False
 
 def ingest_indices(credentials, bedrock):
 
-  INDEX_INGEST_CLOUD_TRAIL=True
-  INDEX_INGEST_FINDINGS=True
-  INDEX_INGEST_LAMBDA=True
-  INDEX_INGEST_ROUTE53=True
-  INDEX_INGEST_S3_DATA=True
-  INDEX_INGEST_VPC_FLOW=True
+  INDEX_INGEST_CLOUD_TRAIL=run_index(SL_DATASOURCE_MAP["cloudtrail_management"])
+  INDEX_INGEST_FINDINGS=run_index(SL_DATASOURCE_MAP["security_hub"])
+  INDEX_INGEST_S3_DATA=run_index(SL_DATASOURCE_MAP["s3_data_events"])
+  INDEX_INGEST_LAMBDA=run_index(SL_DATASOURCE_MAP["lambda_data_events"])
+  INDEX_INGEST_ROUTE53=run_index(SL_DATASOURCE_MAP["route53_logs"])
+  INDEX_INGEST_VPC_FLOW=run_index(SL_DATASOURCE_MAP["vpc_flow_logs"])
 
   # Build Security Lake Cloud Trail Index
   if INDEX_INGEST_CLOUD_TRAIL:

@@ -1,0 +1,35 @@
+{
+    "messageVersion": "1.0",
+    "sessionId": "654654179752208",
+    "agent": {
+      "name": "CybersecurityAgent",
+      "version": "1",
+      "id": "ZG6HUB6ZFC",
+      "alias": "ZQQTATJEC4"
+    },
+    "actionGroup": "search-security-lake",
+    "sessionAttributes": {},
+    "promptSessionAttributes": {},
+    "inputText": "Replace this text with your test input.",
+    "parameters": [],
+    "httpMethod": "GET",
+    "apiPath": "/security-hub",
+    "requestBody": {
+      "content": {
+        "application/json": {
+          "properties": [
+            {
+              "name": "user-input",
+              "type": "string",
+              "value": "Replace this text with your test input."
+            },
+            {
+              "name": "similarity-search",
+              "type": "boolean",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    }
+  }
