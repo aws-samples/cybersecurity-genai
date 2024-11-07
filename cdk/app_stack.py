@@ -40,6 +40,7 @@ class AppStack(Stack):
             processor_iam_role.role.role_arn
         ]
 
+        read_only_aoss_data_access_policy_roles = []
         if constants.AOSS_READ_ONLY_ROLE_ARN:
             read_only_aoss_data_access_policy_roles = [constants.AOSS_READ_ONLY_ROLE_ARN]
 

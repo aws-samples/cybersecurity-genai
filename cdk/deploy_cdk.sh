@@ -47,8 +47,25 @@ echo "✅ - The AWS account has been bootstrapped with CDK."
 # cdk deploy --app "node app.js" --require-approval never
 
 echo "Proceeding with CDK deployment... 🤞"
-mkdir -p output
+
+cdk synth
+if [ $? -ne 0 ]; then
+    echo "❌ - cdk synth failed."
+    exit 1
+fi
+
 cdk destroy --force
-cdk deploy --outputs-file output/cdkOutput.json --require-approval never
+if [ $? -ne 0 ]; then
+    echo "❌ - cdk destroy failed."
+    exit 1
+fi
+
+cdk deploy --require-approval never
+if [ $? -ne 0 ]; then
+    echo "❌ - cdk deploy failed."
+    exit 1
+fi
+cd ..
+
 
 echo "✅ - Infrastructure Deployed! 🚀"

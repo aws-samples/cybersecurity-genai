@@ -89,8 +89,8 @@ Continue to the [Post Deployment](#post-deployment) Steps
 ## Post Deployment
 The following steps need to be completed after the deployment script runs.
 
-- Verify Embedding Processor
-- Verify OpenSearch Collection Indicies
+- [Verify Embedding Processor](#verify-embedding-processor)
+- [Verify OpenSearch Collection Indicies](#verify-opensearch-collection-indicies)
 
 ### Verify Embedding Processor
 Verify the Embedding Processor container is launched and start running. We can navigate to Batch and view the logs to confirm it is working.

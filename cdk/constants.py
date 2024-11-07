@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT-0
 
 # REPLACE EMAIL with your email address
-EMAIL = 'xxx@yyyy.com'
+EMAIL = ''
 
 # The AOSS_READ_ONLY_ROLE_ARN is the Read Only role for the Open Search Data Access Policy
 # Set this Role Name to add a AOSS Read Only data policy
