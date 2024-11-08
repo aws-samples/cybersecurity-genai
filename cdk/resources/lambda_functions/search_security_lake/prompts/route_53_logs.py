@@ -13,6 +13,7 @@ def system() -> str:
 - cloud.region (text)
 - cloud.region.keyword (text)
 - severity (text): Unknown|Informational|Low|Medium|High|Critical|Fatal|Other
+- severity.keyword (text)
 - src_endpoint.vpc_uid (text)
 - src_endpoint.vpc_uid.keyword (text)
 - src_endpoint.instance_uid (text)

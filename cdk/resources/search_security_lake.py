@@ -96,22 +96,6 @@ class SearchSecurityLake(Construct):
 
 
 
-        lambda_layer_boto3 = aws_lambda.LayerVersion(
-            self,
-            id=constants.SEARCH_SECURITY_LAKE_LAMBDA_LAYER_BOTO3_ID,
-            layer_version_name=constants.SEARCH_SECURITY_LAKE_LAMBDA_LAYER_BOTO3_NAME,
-            code=aws_lambda.Code.from_asset('resources/lambda_layers/boto3_converse/layer.zip'),
-            compatible_runtimes=[
-                aws_lambda.Runtime.PYTHON_3_12,
-            ],
-            description='boto3 1.34.127 converse API support',
-            compatible_architectures=[
-                aws_lambda.Architecture.ARM_64,
-                aws_lambda.Architecture.X86_64
-            ]
-        )
-
-
         lambda_layer_opensearchpy = aws_lambda.LayerVersion(
             self,
             id=constants.SEARCH_SECURITY_LAKE_LAMBDA_LAYER_OPENSEARCHPY_ID,
@@ -137,11 +121,10 @@ class SearchSecurityLake(Construct):
             runtime=aws_lambda.Runtime.PYTHON_3_12,
             architecture=aws_lambda.Architecture.ARM_64,
             handler='lambda_function.lambda_handler',
-            timeout=Duration.seconds(30),
+            timeout=Duration.seconds(90),
             memory_size=512,
             role=lambda_iam_role,
             layers=[
-                lambda_layer_boto3,
                 lambda_layer_opensearchpy
             ],
             environment={'PARAMETER_NAME': ssm_parameter.parameter_name}

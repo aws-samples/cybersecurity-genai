@@ -13,6 +13,7 @@ def system() -> str:
 - cloud.region (text)
 - cloud.region.keyword (text)
 - severity (text): Unknown|Informational|Low|Medium|High|Critical|Fatal|Other
+- severity.keyword (text)
 - api.operation (text)
 - api.operation.keyword (text)
 - api.service (text)

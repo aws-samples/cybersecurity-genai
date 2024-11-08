@@ -34,7 +34,7 @@ class EventBridgeScheduledBatchJob(Construct):
             flexible_time_window=scheduler.CfnSchedule.FlexibleTimeWindowProperty(
                 mode="OFF",
             ),
-            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_EXPRESSION,
+            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_CLOUD_TRAIL,
             name=f"{EVENT_BRIDGE_SCHEDULER_NAME}-security_lake_cloud_trail_index",
             target=scheduler.CfnSchedule.TargetProperty(
                 arn=constants.EVENT_BRIDGE_BATCH_SUBMIT_JOB_ARN,
@@ -52,7 +52,7 @@ class EventBridgeScheduledBatchJob(Construct):
             flexible_time_window=scheduler.CfnSchedule.FlexibleTimeWindowProperty(
                 mode="OFF",
             ),
-            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_EXPRESSION,
+            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_FINDINGS,
             name=f"{EVENT_BRIDGE_SCHEDULER_NAME}-security_lake_findings_index",
             target=scheduler.CfnSchedule.TargetProperty(
                 arn=constants.EVENT_BRIDGE_BATCH_SUBMIT_JOB_ARN,
@@ -70,7 +70,7 @@ class EventBridgeScheduledBatchJob(Construct):
             flexible_time_window=scheduler.CfnSchedule.FlexibleTimeWindowProperty(
                 mode="OFF",
             ),
-            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_EXPRESSION,
+            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_S3DATA,
             name=f"{EVENT_BRIDGE_SCHEDULER_NAME}-security_lake_s3_data_index",
             target=scheduler.CfnSchedule.TargetProperty(
                 arn=constants.EVENT_BRIDGE_BATCH_SUBMIT_JOB_ARN,
@@ -88,7 +88,7 @@ class EventBridgeScheduledBatchJob(Construct):
             flexible_time_window=scheduler.CfnSchedule.FlexibleTimeWindowProperty(
                 mode="OFF",
             ),
-            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_EXPRESSION,
+            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_LAMBDA,
             name=f"{EVENT_BRIDGE_SCHEDULER_NAME}-security_lake_lambda_index",
             target=scheduler.CfnSchedule.TargetProperty(
                 arn=constants.EVENT_BRIDGE_BATCH_SUBMIT_JOB_ARN,
@@ -106,7 +106,7 @@ class EventBridgeScheduledBatchJob(Construct):
             flexible_time_window=scheduler.CfnSchedule.FlexibleTimeWindowProperty(
                 mode="OFF",
             ),
-            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_EXPRESSION,
+            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_ROUTE53,
             name=f"{EVENT_BRIDGE_SCHEDULER_NAME}-security_lake_route53_index",
             target=scheduler.CfnSchedule.TargetProperty(
                 arn=constants.EVENT_BRIDGE_BATCH_SUBMIT_JOB_ARN,
@@ -124,7 +124,7 @@ class EventBridgeScheduledBatchJob(Construct):
             flexible_time_window=scheduler.CfnSchedule.FlexibleTimeWindowProperty(
                 mode="OFF",
             ),
-            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_EXPRESSION,
+            schedule_expression=constants.EVENT_BRIDGE_SCHEDULE_VPC_FLOW,
             name=f"{EVENT_BRIDGE_SCHEDULER_NAME}-security_lake_vpc_flow_index",
             target=scheduler.CfnSchedule.TargetProperty(
                 arn=constants.EVENT_BRIDGE_BATCH_SUBMIT_JOB_ARN,

@@ -5,7 +5,7 @@ import time
 import requests
 import boto3
 import json
-from env import AWS_REGION, AOSS_PURGE_LT, AOSS_ENDPOINT, AOSS_TIME_ZONE
+from env import AWS_REGION, AOSS_PURGE_LT, AOSS_ENDPOINT, AOSS_TIME_ZONE, AOSS_BULK_DELETE_SIZE
 from requests_aws4auth import AWS4Auth
 
 print(f"PurgeTimeConfig: { AOSS_PURGE_LT }")
@@ -167,7 +167,7 @@ def delete_by_query (index_name, delete_query):
     src_doc_count = index_count(index_name) # Capturing the Total Document count of the Index before 'delete_by_query' is performed.
     exception_count = 0
     start_time = time.time()
-    batch_size = 2000
+    batch_size = AOSS_BULK_DELETE_SIZE
     delete_query['size'] = batch_size
 
     while True:
