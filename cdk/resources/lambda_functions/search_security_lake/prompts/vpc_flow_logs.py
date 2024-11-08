@@ -15,6 +15,7 @@ def system() -> str:
 - cloud.zone (text)
 - cloud.zone.keyword (text)
 - severity (text): Unknown|Informational|Low|Medium|High|Critical|Fatal|Other
+- severity.keyword (text)
 - action (text): Allowed|Denied
 - connection_info.direction (text): "Inbound" or "Outbound"
 - connection_info.direction.keyword (text): "Inbound" or "Outbound"

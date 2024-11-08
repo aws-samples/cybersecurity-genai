@@ -15,5 +15,8 @@ node_modules
 dist
 tsconfig.node.tsbuildinfo
 tsconfig.tsbuildinfo
-vite.config.d.ts
 vite.config.js
+vite.config.d.ts
+
+# vscode
+**/.vscode/**

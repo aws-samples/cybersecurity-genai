@@ -50,6 +50,7 @@ class BatchProcessor(Construct):
                     "AOSS_TIME_ZONE": constants.AOSS_TIME_ZONE,
                     "AOSS_ENDPOINT": collection_endpoint,
                     "AOSS_BULK_CREATE_SIZE": constants.AOSS_BULK_CREATE_SIZE,
+                    "AOSS_BULK_DELETE_SIZE": constants.AOSS_BULK_DELETE_SIZE,
                     "SECURITY_LAKE_ATHENA_BUCKET": bucket_name,
                     "SECURITY_LAKE_ATHENA_PREFIX": constants.SECURITY_LAKE_ATHENA_PREFIX,
                     "SL_DATABASE_NAME": constants.SL_DATABASE_NAME,

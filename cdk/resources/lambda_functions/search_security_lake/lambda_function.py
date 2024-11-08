@@ -470,7 +470,10 @@ def parse_properties(event: Dict) -> Dict:
         if name == 'user-input':
             properties['user-input'] = value
         elif name == 'similarity-search':
-            properties['similarity-search'] = bool(value)
+            if value.lower() == 'true':
+                properties['similarity-search'] = True
+            else:
+                properties['similarity-search'] = False
     return properties
 
 

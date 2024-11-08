@@ -10,6 +10,8 @@ def system() -> str:
 - time_dt (date): Timestamp in ISO format
 - cloud.region (text)
 - cloud.region.keyword (text)
+- severity (text): Unknown|Informational|Low|Medium|High|Critical|Fatal|Other
+- severity.keyword (text)
 - api.request.data.functionName (text)
 - api.request.data.functionName.keyword (text)
 - api.operation (text)
