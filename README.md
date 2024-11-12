@@ -10,7 +10,6 @@ Cybersecurity GenAI deploys a single page application that allows you to convers
 - [Deploy](#deploy)
 - [Post Deploy](#post-deployment)
 - [Architecture](#architecture)
-- [Need more Help?](#need-more-help)
 
 ## Prerequisites
 The following prerequisites need to be met before running the deployment script.
