@@ -28,7 +28,7 @@ from opensearchpy import exceptions as OpensearchExceptions
 
 
 
-AOSS_HOST = 'b9cz0seevsx65fqpbh64.us-east-1.aoss.amazonaws.com'
+AOSS_HOST = '' # Use your colleciton endpoint without the https.
 AOSS_REGION = 'us-east-1'
 
 BEDROCK_EMBEDDING_MODEL = 'amazon.titan-embed-text-v2:0'
@@ -54,10 +54,11 @@ bedrock_runtime = boto3.client('bedrock-runtime')
 
 
 def main() -> None:
-    index = SecurityLakeIndex.CLOUDTRAIL
+    index = SecurityLakeIndex.SECURITY_HUB
 
     size = 100
-    body = query_most_recent_document(size)
+#    body = query_most_recent_document(size)
+    body = {'query': {'bool': {'must': [{'multi_match': {'query': 'security group unrestricted access', 'fields': ['unmapped.FindingProviderFields.Types[]']}}, {'term': {'unmapped.ProductFields.aws/securityhub/ProductName.keyword': 'Firewall Manager'}}]}}, '_source': {'excludes': ['embedding_vector']}}
 
 #    body = query_search_all_fields(input('> '))
 

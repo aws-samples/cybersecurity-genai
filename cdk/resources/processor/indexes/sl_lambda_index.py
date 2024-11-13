@@ -270,7 +270,7 @@ def build_lambda_index(bedrock, s3_bucket = None, s3_key = None, delete_idx = Fa
 
         except Exception as e:
             error_cnt += 1
-            print(f"{error_cnt}| Error:", type(e).__name__, "|", e)
+            print(f"{error_cnt} | Exception: { str(e) }")
 
     count = index_count(security_lake_lambda_index_name)
     print(f"Index count: { str(count) } | Error count: { str(error_cnt)}")
@@ -438,8 +438,7 @@ def create_embedding_str(json):
         additional_event_data_function_version: {json['unmapped']['additionalEventData.functionVersion']}
         additional_event_data_management_event: {json['unmapped']['managementEvent']}
         additional_event_data_read_only: {json['unmapped']['readOnly']}
-        additional_event_data_recipient_account_id: {json['unmapped']['recipientAccountId']}
-        additional_event_data_shared_event_id: {json['unmapped']['sharedEventID']}."""
+        additional_event_data_recipient_account_id: {json['unmapped']['recipientAccountId']}."""
 
         # event_data = json.dumps(doc["class_name"] + ' ' + \
         #                         doc["category_name"] + ' ' + \

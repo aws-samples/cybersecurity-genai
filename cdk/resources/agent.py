@@ -32,14 +32,19 @@ class BedrockAgent(Construct):
 
         bedrock_agent_invokemodel_statement = aws_iam.PolicyStatement(
             effect=aws_iam.Effect.ALLOW,
-            actions=["bedrock:InvokeModel"],
+            actions=[
+                "bedrock:InvokeModel",
+                "bedrock:GetInferenceProfile"
+            ],
             resources=[
                 f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/amazon.titan-text-express-v1",
                 f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/amazon.titan-text-lite-v1",
                 f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/amazon.titan-text-premier-v1:0",
                 f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/anthropic.claude-3-haiku-20240307-v1:0",
+                f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/anthropic.claude-3-5-haiku-20241022-v1:0",
                 f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0",
                 f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/anthropic.claude-3-5-sonnet-20240620-v1:0",
+                f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0",
                 f"arn:aws:bedrock:{Stack.of(self).region}::foundation-model/anthropic.claude-3-opus-20240229-v1:0"
             ]
         )

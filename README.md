@@ -1,5 +1,7 @@
 # Cybersecurity GenAI
 
+This AWS sample demonstrates the creation of a Generative AI-based enterprise security agent using Amazon Bedrock and Amazon Security Lake. It showcases how Large Language Models (LLMs), prompt engineering, and Retrieval Augmented Generation (RAG) can be applied to an organization's proprietary security data to allow for data exploration and threat hunting with natural language. By leveraging AWS services such as Amazon Bedrock, Amazon Security Hub, AWS CloudTrail, and Amazon VPC Flow Logs, along with Vector Engine for Amazon OpenSearch Serverless, this solution enables organizations to create an in-house security analysis tool.
+
 ![screenshot-chat](media/screenshot-chat-with-security-lake.png)
 
 Cybersecurity GenAI deploys a single page application that allows you to converse with your Security Lake OCSF data via Bedrock Agents. 
@@ -10,13 +12,13 @@ Cybersecurity GenAI deploys a single page application that allows you to convers
 - [Deploy](#deploy)
 - [Post Deploy](#post-deployment)
 - [Architecture](#architecture)
-- [Need more Help?](#need-more-help)
 
 ## Prerequisites
 The following prerequisites need to be met before running the deployment script.
 
 - [Security Lake Setup and Running](#security-lake-setup-and-running)
 - [Database and Tables](#database-and-tables)
+- [Open Search Serverless Capacity Management](#open-search-serverless-capacity-management)
 - [CDK Setup](#cdk-setup)
 - [Bedrock Model Access](#cdk-setup)
 
@@ -46,6 +48,18 @@ You will need to upgrade your Security Lake to 2.0 if you are still on the prior
 
 You can validate security lake is setup by running test queries against the tables.  
 [Security Lake queries for AWS source version 2 (OCSF 1.1.0)](https://docs.aws.amazon.com/security-lake/latest/userguide/subscriber-query-examples2.html)
+
+### Open Search Serverless Capacity Management
+
+The default maximum capacity is 10 OCUs for indexing and 10 OCUs for search. The minimum allowed capacity for an account is 1 OCU [0.5 OCU x 2] for indexing and 1 OCU [0.5 OCU x 2] for search.
+
+It is suggested to set the Maxium indexing Capacity and Maximum search capacity equal to 2 OCUs.
+
+To configure capacity settings in the OpenSearch Serverless console, expand Serverless in the left navigation pane and select Dashboard. Specify the maximum indexing and search capacity under Capacity management:
+
+![aoss-capacity](media/screenshot-aoss-capacity.png)
+
+Additional information on managing capacity can be found here [Managing capacity limits for Amazon OpenSearch Serverless](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-scaling.html).
 
 ### CDK Setup
 You will need the CDK Installed and your AWS Account Bootstrapped.  

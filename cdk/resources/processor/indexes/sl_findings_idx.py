@@ -269,7 +269,7 @@ def build_findings_index(bedrock, s3_bucket = None, s3_key = None, delete_idx = 
 
         except Exception as e:
             error_cnt += 1
-            print(f"{error_cnt}| Error:", type(e).__name__, "|", e)
+            print(f"{error_cnt} | Exception: { str(e) }")
 
     count = index_count(security_lake_findings_index_name)
     print(f"Index count: { str(count) } | Error count: { str(error_cnt)}")
