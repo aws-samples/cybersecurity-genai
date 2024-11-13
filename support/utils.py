@@ -57,8 +57,7 @@ def main() -> None:
     index = SecurityLakeIndex.SECURITY_HUB
 
     size = 100
-#    body = query_most_recent_document(size)
-    body = {'query': {'bool': {'must': [{'multi_match': {'query': 'security group unrestricted access', 'fields': ['unmapped.FindingProviderFields.Types[]']}}, {'term': {'unmapped.ProductFields.aws/securityhub/ProductName.keyword': 'Firewall Manager'}}]}}, '_source': {'excludes': ['embedding_vector']}}
+    body = query_most_recent_document(size)
 
 #    body = query_search_all_fields(input('> '))
 
