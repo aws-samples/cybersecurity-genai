@@ -12,9 +12,14 @@ class OpenSearchServerless(Construct):
     def __init__(self, scope: Construct, construct_id: str, data_access_policy_roles: list[str], ro_data_access_policy_roles: list[str], **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # standby_replicas='ENABLED'|'DISABLED'
+        # For development and testing purposes, you can disable the 
+        # Enable redundancy setting for a collection, which eliminates 
+        # the two standby replicas and only instantiates two OCUs.
         collection = ops.CfnCollection(self, AOSS_SECURITYLAKE_COLLECTION, 
             name="sec-embed-collection",                               
-            type="VECTORSEARCH"
+            type="VECTORSEARCH",
+            standby_replicas=constants.AOSS_STANDBY_REPLICAS
         )
         if constants.AOSS_COLLECTION_RETAIN:
             collection.apply_removal_policy(cdk.RemovalPolicy.RETAIN)

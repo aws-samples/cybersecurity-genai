@@ -247,7 +247,7 @@ def build_route53_index(bedrock, s3_bucket = None, s3_key = None, delete_idx = F
 
         except Exception as e:
             error_cnt += 1
-            print(f"{error_cnt}| Error:", type(e).__name__, "|", e)
+            print(f"{error_cnt} | Exception: { str(e) }")
 
     count = index_count(security_lake_route53_index_name)
     print(f"Index count: { str(count) } | Error count: { str(error_cnt)}")

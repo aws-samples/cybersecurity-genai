@@ -23,6 +23,7 @@ from resources.web_ui import CloudFront
 from resources.parameter import Parameter
 from resources.search_security_lake import SearchSecurityLake
 from resources.agent import BedrockAgent
+from resources.dashboard import Dashboard
 
 
 
@@ -142,7 +143,10 @@ class AppStack(Stack):
         cybersecurity_genai_agent.add_lambda_permission(search_security_lake.function)
 
 
-
+        Dashboard(
+            self,
+            'dashboard'
+        )
 
 
         CfnOutput(
