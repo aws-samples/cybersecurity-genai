@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT-0
 
 
+from aws_cdk import Aws
 from aws_cdk import aws_cloudwatch
 from aws_cdk import Duration
 from constructs import Construct
@@ -99,14 +100,14 @@ class Dashboard(Construct):
                 aws_cloudwatch.Metric(
                     namespace="AWS/AOSS",
                     metric_name="SearchOCU",
-                    dimensions_map={"ClientId": "262018947652"},
+                    dimensions_map={"ClientId": Aws.ACCOUNT_ID},
                     statistic="Sum",
                     period=Duration.minutes(1)
                 ),
                 aws_cloudwatch.Metric(
                     namespace="AWS/AOSS",
                     metric_name="IndexingOCU",
-                    dimensions_map={"ClientId": "262018947652"},
+                    dimensions_map={"ClientId": Aws.ACCOUNT_ID},
                     statistic="Sum",
                     period=Duration.minutes(1)
                 )
