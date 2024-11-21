@@ -277,6 +277,7 @@ class AossKnowledgebase(Construct):
             on_event_handler=creaet_index_lambda,
             log_retention=RetentionDays.ONE_DAY
         )
+        custom_resource_provider.node.add_dependency(creaet_index_lambda)
         
 
         custom_resource = CustomResource(
