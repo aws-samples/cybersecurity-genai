@@ -70,7 +70,7 @@ You will need the CDK Installed and your AWS Account Bootstrapped.
 
 See [prerequisites](#prerequisites). If everything is ready to go run the deploy script.
 
-Open the `cdk/constants.py` file to set the Email and Open Search  read only role.
+Open the `cdk/config.py` file to set the Email and Open Search  read only role.
 
 The email address is used to sign in. You'll receive an email with the temporary password.
 
@@ -93,7 +93,7 @@ Deployment takes approximately 10 - 15 minutes to deploy.
 ```
 git clone https://github.com/aws-samples/cybersecurity-genai.git
 cd solution
-./deploy_solution.sh
+./deploy.sh
 ```
 
 Deploy will first cdk deploy the environment, then it will deploy the single page application. The deploy will output the CloudFront distribution at the end. This URL can also be found in the outputs of the CloudFormation stack.
@@ -132,9 +132,16 @@ The Embedding Processor will create an index for each Security Lake Data Source 
 
 ## Architecture
 
+Below are diagrams for the high level architectures. [To view diagrams for each of the stacks click here](cdk/stacks/README.md).
+
 **High Level Architecture**
 
 ![high-level-architecture](media/high-level-diagram.png)
+
+**End to End Architecture**
+
+![end-to-end-architecture-diagram](media/cgd-end-to-end.png)
+
 
 **Embedding Processor Architecture**
 ![high-level-architecture](media/screenshot-embedding-processor.jpg)
