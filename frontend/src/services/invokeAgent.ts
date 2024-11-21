@@ -12,8 +12,8 @@ const personaInstructions = {
 
 const InvokeAgent = async (userInput: string, sessionId: string, persona: 'CISO' | 'Auditor' | 'Cybersecurity analyst', onChunk: (chunk: Uint8Array) => void, onRationaleText: (text: string) => void) => {
   console.log('InvokeAgent starting with persona:', persona)
-  const agentId = import.meta.env.VITE_BEDROCKAGENTID
-  const agentAliasId = import.meta.env.VITE_BEDROCKALIASID
+  const agentId = import.meta.env.VITE_AgentId
+  const agentAliasId = import.meta.env.VITE_AgentAliasId
   const request = new InvokeAgentCommand({
     agentId,
     agentAliasId,

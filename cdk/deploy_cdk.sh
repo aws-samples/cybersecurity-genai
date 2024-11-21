@@ -54,13 +54,13 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-cdk destroy --force
+cdk destroy --all --force
 if [ $? -ne 0 ]; then
     echo "❌ - cdk destroy failed."
     exit 1
 fi
 
-cdk deploy --require-approval never
+cdk deploy --all --require-approval never
 if [ $? -ne 0 ]; then
     echo "❌ - cdk deploy failed."
     exit 1
