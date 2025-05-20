@@ -92,7 +92,7 @@ Deployment takes approximately 10 - 15 minutes to deploy.
 
 ```
 git clone https://github.com/aws-samples/cybersecurity-genai.git
-cd solution
+cd cdk
 ./deploy.sh
 ```
 
